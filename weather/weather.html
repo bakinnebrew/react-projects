@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title>Weather</title>
+    <style>
+        #weather-card{
+            width: 75px;
+            height: 75px;
+            border-color:steelblue;
+            border-style:solid;
+            border-radius: 5px;   
+            display: inline-block; 
+            margin-right: 10px;   
+        }
+
+        body {
+            text-align: center;
+            color: black;
+            font-family: sans-serif;
+        }
+
+        #weather-prop-temp{
+            font-size: larger;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="app" />
+    <script type="text/babel">
+
+      class WeatherCard extends React.Component {
+
+            constructor(props){
+                super(props);
+                this.state = {
+                    city_name: "",
+                    temperature: 0,
+                    wind_speed: 0
+                }
+            }
+          render(){
+              return(
+                  <div id="weather-card">
+                    <h3> {this.props.city_name} </h3>
+                        <div id="weather-prop"> {this.props.day_of_week} </div>
+                        <div id="weather-prop-temp"> {this.props.temperature} </div>
+                        <div id="weather-prop"> {this.props.wind_speed} </div>
+                  </div>
+              )
+          }
+      }
+
+
+      class App extends React.Component {
+
+            constructor(props){
+                super(props);
+                this.state = {
+                    search: "",
+                    city: "",
+                    forecast: "",
+
+                }
+            }
+
+        render() {
+          return (
+            <div>
+                <h1> Weather App </h1>
+                <input type="text" placeholder="e.g., Atlanta" onKeyPress={this.inputKeyPress} onChange={this.updateResponse} value={this.state.search}/>
+                <h3 id="current-forecast"> Current Forecast: {this.state.forecast}</h3>
+                <div>
+                    <WeatherCard day_of_week="MON" temperature="0" />
+                    <WeatherCard day_of_week="TUE" temperature="0" />
+                    <WeatherCard day_of_week="WED" temperature="0" />
+                    <WeatherCard day_of_week="THR" temperature="0" />
+                    <WeatherCard day_of_week="FRI" temperature="0" />
+                    <WeatherCard day_of_week="SAT" temperature="0" />
+                    <WeatherCard day_of_week="SUN" temperature="0" />
+                </div>
+            </div>
+          );
+        }
+
+        inputKeyPress = (event) => {
+            if(event.key === 'Enter'){
+                const search = this.state.search;
+                if(search=== "London"){
+                    fetch("https://community-open-weather-map.p.rapidapi.com/weather?q=London%2Cuk&lang=null&units=imperial", {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "e2fa911db7msh93dbbd7933d36a8p1ef276jsnf1cfb11fbcd8",
+                        "x-rapidapi-host": "community-open-weather-map.p.rapidapi.com"
+                    }
+                })
+                .then(response => {
+                    console.log(response);
+                    return response.json()
+                })
+                .then(json => {
+                    console.log('json', json)
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+            }
+                else{
+                    this.setState({
+                        forecast: "INVALID ENTRY"
+                    })
+                }
+            }
+        }
+
+        updateResponse = (event) => {
+            this.setState({
+                search: event.target.value
+            });
+        }
+      
+    }
+
+      ReactDOM.render(<App />, document.querySelector("#app"));
+
+    </script>
+  </body>
+</html>
+

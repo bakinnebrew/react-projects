@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title>Currency</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+
+      class App extends React.Component {
+
+        constructor(props){
+                    super(props);
+                    this.state = {
+                        currency_origin_value1: "",
+                        currency_origin_value2: "",
+                        country1: "",
+                        country2: "",
+                        result: "0",
+                    }
+                }
+
+
+
+        render() {
+          return (
+            <div>
+             <h1 id="page-header">Currency Exchanger</h1>
+             <div>
+                <form onChange={this.runCalculation}>
+                    <input id="currency-origin-value" value={this.state.currency_origin_value1} onChange={this.updateNumber1} placeholder="0"/>
+                    <input onChange={this.updateCountry1} value={this.state.country1} id="currency-origin" type="text" placeholder="USD"/>
+                    <br />
+                    <input id="currency-origin-value" value={this.state.currency_origin_value2} onChange={this.updateNumber2} placeholder="0"/>
+                    <input onChange={this.updateCountry2} value={this.state.country2} id="currency-origin" type="text" placeholder="EUR"/>
+                    <div id="result"> 
+                        Result: {this.state.result}
+                    </div>
+                </form>    
+             </div>
+            </div>
+          );
+        }
+      
+
+      updateNumber1 = (event) => {
+          if(this.currency_origin_value1 === ""){
+              this.setState({
+                  currency_origin_value1: "0"
+              })
+          }
+          else{
+          this.setState({
+              currency_origin_value1: parseInt(event.target.value)
+          })
+        }
+       
+      }
+
+      updateNumber2 = (event) => {
+          this.setState({
+              currency_origin_value2: parseInt(event.target.value)
+          })
+      }
+
+      updateCountry1 = (event) => {
+          this.setState({
+              country1: event.target.value.toUpperCase()
+          })
+      }
+
+      updateCountry2 = (event) => {
+          this.setState({
+              country2: event.target.value.toUpperCase()
+          })
+
+        }
+    
+      runCalculation = (event) => {
+          if(this.state.country1.length === 3 && this.state.country2.length === 2){
+              const conversion = 1.32 * this.state.currency_origin_value1
+              this.setState({
+                  result: conversion.toFixed(3),
+                  currency_origin_value2: conversion.toFixed(3)
+              })
+          }
+          else{
+              this.setState({
+                  result: "",
+                  currency_origin_value2: ""
+              })
+          }
+      }
+
+        }
+                
+
+      ReactDOM.render(<App />, document.querySelector("#app"));
+
+    </script>
+  </body>
+</html>

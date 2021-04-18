@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title> D&D React</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </head>
+  <style>
+      button{
+          margin-right: 10px;
+      }
+  </style>
+  <body>
+    <div id="app"></div> 
+    <script type="text/babel">
+
+    class Monster extends React.Component {
+     
+        render() {
+            return(
+                <div>
+                    <h1> {this.props.name} </h1>
+                    <div>
+                        Armor Class: {this.props.armor_class}
+                    </div>
+                    <div>
+                       Alignment: {this.props.alignment}
+                    </div>
+                    <hr/>
+                </div>
+            )
+        }
+    }
+
+    class MonsterList extends React.Component {
+        constructor(props){
+            super(props);
+            this.state = {
+                monsters: []
+            }
+        }
+        componentDidMount
+        render(){
+            return(
+                <div>
+                {this.state.monsters.map(monster => {
+                    return<Monster name={monster.name} armor_class={monster.armor_class} alignment={monster.alignment} />
+                })}
+                </div>
+            )
+        }
+    }
+
+      class App extends React.Component {
+        componentDidMount() {
+
+        }
+
+        render() {
+          return (
+            <div>
+                <h1>DM Guide</h1>
+                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                    <ul className="navbar-nav mr-auto">
+                        <li className="nav-item">
+                            <button id="equipment-button" className="btn btn-primary">Equipment</button>
+                        </li>
+                        <li className="nav-item">
+                            <button id="monster-button" className="btn btn-primary" onClick={this.monsterSearch}>Monsters</button>
+                        </li>
+                        <li className="nav-item">
+                            <button id="dice-roller-button" className="btn btn-primary"> Dice Roller</button>
+                        </li>
+                    </ul>
+                </nav>
+                <div>
+                    <MonsterList />
+                </div>
+            </div>
+          );
+        }
+
+        monsterSearch = (event) => {
+            fetch('https://www.dnd5eapi.co/api/monsters')
+            .then(response => response.json())
+            .then(monsters => {
+                var monster_arr = [];
+                for(var i =0; i < 5; i++){
+                    var name = monsters.results[i].name
+                    console.log(name)
+                    monster_arr.push(name)
+                };
+                const monsters_list = monster_arr.map((monster, index) =>
+                <li key={index}> {monster} </li>
+                );
+                return (
+                    <div>
+                        <ul>{monsters_list}</ul>
+                    </div>
+                );
+             
+            })
+         }
+         
+      }
+
+      ReactDOM.render(<App />, document.querySelector("#app"));
+
+    </script>
+  </body>
+</html>

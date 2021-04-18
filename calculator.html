@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello!</title>
+        <style>
+        #app {
+            font-family: sans-serif;
+        }
+        
+        #problem {
+            font-size: 72px
+        }
+
+        #winner {
+            font-size: 72px;
+            text-align: center;
+            font-family: sans-serif;
+            color: lawngreen;
+        }
+
+        #math-sign{
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 32px;
+            width: 100px;
+            height: 100px;
+            background-color: lightblue;
+            border-radius: 5px;
+            border-color: lightcoral;
+            color: rgb(78, 78, 78);
+            font-weight: bold;
+        }
+
+        #math-sign:hover {
+            background-color: hotpink;
+        }
+
+        #math-sign-clear{
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 32px;
+            width: 75px;
+            height: 50px;
+            background-color: rgb(221, 84, 59);
+            border-radius: 5px;
+            border-color: rgb(218, 38, 38);
+            color: rgb(78, 78, 78);
+            font-weight: bold;
+        }
+
+        #math-sign-clear:hover {
+            background-color: rgb(163, 26, 7);
+        }
+
+
+        #header {
+            font-size: 72px;
+            text-align: center;
+            font-family: sans-serif;
+        }
+
+        #display-result{
+            float: right;
+            font-size: 72px;
+        }
+
+        #machine{
+            border:rgb(78, 78, 78);
+            border-style: solid;
+            padding: 30px;
+        }
+
+        
+          
+        </style>
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    </head>
+    <body>
+        <div id="app" />
+        <script type="text/babel">
+
+            class App extends React.Component {
+
+                constructor(props){
+                    super(props);
+                    this.state = {
+                        num1: "0",
+                        num2: "",
+                        nextNum: 0,
+                        decimaled: 0,
+                        operation: "",
+                        result: "",
+                        
+                    }
+                }
+
+
+                render() {
+
+                    return (
+                    <div>
+                        <div id="problem"> </div>
+                        <div>
+                        <h1 id="header">Calculator</h1>
+                            <div id="machine">
+                                <button id="math-sign-clear" value="C" onClick={this.clearNumbers}> C </button>
+                                <div>
+                                    <button id="math-sign" value="1" onClick={this.updateNumber}> 1 </button>
+                                    <button id="math-sign" value="2" onClick={this.updateNumber}> 2 </button>
+                                    <button id="math-sign" value="3" onClick={this.updateNumber}> 3 </button>
+                                    <button id="math-sign" value="+" onClick={this.updateOperation}> + </button>
+                                </div>
+                                <div>
+                                    <button id="math-sign" value="4" onClick={this.updateNumber}> 4 </button>
+                                    <button id="math-sign" value="5" onClick={this.updateNumber}> 5 </button>
+                                    <button id="math-sign" value="6" onClick={this.updateNumber}> 6 </button>
+                                    <button id="math-sign" value="-" onClick={this.updateOperation}> - </button>
+                                </div>
+                                <div>
+                                    <button id="math-sign" value="7" onClick={this.updateNumber}> 7 </button>
+                                    <button id="math-sign" value="8" onClick={this.updateNumber}> 8 </button>
+                                    <button id="math-sign" value="9" onClick={this.updateNumber}> 9 </button>
+                                    <button id="math-sign" value="x" onClick={this.updateOperation}> x </button>
+                                </div>
+                                <div>
+                                    <button id="math-sign" value="0" onClick={this.updateNumber}> 0 </button>
+                                    <button id="math-sign" value="." onClick={this.updateNumber}> . </button>
+                                    <button id="math-sign" value="÷" onClick={this.updateOperation}> ÷ </button>
+                                    <button id="math-sign" value="=" onClick={this.findResult}> = </button>
+                                </div>
+                                <h1 id="display-result"> {this.state.num1} {this.state.operation} {this.state.num2} </h1>
+                             </div>
+                        </div>
+                    </div>);
+                }
+
+                inputKeyPress = (event) => {
+                    if(event.key === 'Enter'){
+                        const answer = parseInt(this.state.response);
+                        if(answer === this.state.num1 + this.state.num2){
+                            this.setState(state => ({
+                                score: state.score + 1,
+                                num1: Math.ceil(Math.random() * 10),
+                                num2: Math.ceil(Math.random() * 10),
+                                response: "" 
+                            }));
+                        }
+                    }
+                }
+
+                updateResponse = (event) => {
+                    this.setState({
+                        response: event.target.value
+                    });
+                    
+                }
+
+                replayGame = (event) => {
+                    window.location.reload()
+                }
+
+
+                updateOperation = (event) => {
+                        this.setState({
+                            operation: event.target.value,
+                            nextNum: 1
+                        });
+                    }
+                
+
+                //fix this function. we need to add to the string after each click, not simply change the value of num1 to the event.target.value
+                updateNumber = (event) => {
+                    if(this.state.nextNum === 0){
+                        
+                    
+                        if(this.state.num1 === "0"){
+                            var value = parseInt(event.target.value)
+                                this.setState({
+                                num1: value
+                            });
+                        }
+                        else{
+                            var value = parseInt(this.state.num1 + event.target.value)
+                            this.setState({
+                                num1: value
+                            })
+                        }
+                    }
+                    else{
+                        if(this.state.num2 === ""){
+                            var value2 = parseInt(event.target.value )
+                                this.setState({
+                                    num2: value2
+                                })
+                        }
+                        else{
+                            var value2 = parseInt(this.state.num2 + event.target.value)
+                            this.setState({
+                                num2: value2
+                            });
+                        }
+                    }
+                
+                };
+
+                clearNumbers = (event) => {
+                    this.setState({
+                        num1: "0",
+                        num2: "",
+                        operation: "",
+                        result: "",
+                        nextNum: 0
+                    })
+                }
+
+                findResult = (event) => {
+                    const operationSign = this.state.operation
+                    var finalResult;
+
+                    switch(operationSign){
+                        case '+':
+                            finalResult = this.state.num1 + this.state.num2
+                            break;
+                        case '-':
+                            finalResult = this.state.num1 - this.state.num2
+                            break;
+                        case 'x':
+                            finalResult = this.state.num1 * this.state.num2
+                            break;
+                        case '÷':
+                            finalResult = this.state.num1 / this.state.num2
+                            break;
+                        default:
+                            console.log("error");
+                    }
+                    this.setState({
+                        num1: finalResult,
+                        num2: "",
+                        operation: "",
+                        result: finalResult,
+                        nextNum: 1
+                    });
+                }
+
+                
+            }
+            ReactDOM.render(<App />, document.querySelector("#app"));
+        </script>
+    </body>
+</html>
+
+My own math functions
+we need to run one of these depending on what the operator is
+myFunctions = [
+    function(a, b){return a+b;}, 
+    function(a, b){return a-b;}, 
+    function(a, b){return a/b;}, 
+    function(a, b){return a*b;}
+];
+
+
