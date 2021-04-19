@@ -59,11 +59,16 @@
             constructor(props){
                 super(props);
                 this.state = {
+                    day_of_week: "",
                     search: "",
                     city: "",
                     forecast: "",
+                    temperature: 0,
 
                 }
+            }
+            componentDidMount() {
+            this.getWeekday()
             }
 
         render() {
@@ -73,13 +78,8 @@
                 <input type="text" placeholder="e.g., Atlanta" onKeyPress={this.inputKeyPress} onChange={this.updateResponse} value={this.state.search}/>
                 <h3 id="current-forecast"> Current Forecast: {this.state.forecast}</h3>
                 <div>
-                    <WeatherCard day_of_week="MON" temperature="0" />
-                    <WeatherCard day_of_week="TUE" temperature="0" />
-                    <WeatherCard day_of_week="WED" temperature="0" />
-                    <WeatherCard day_of_week="THR" temperature="0" />
-                    <WeatherCard day_of_week="FRI" temperature="0" />
-                    <WeatherCard day_of_week="SAT" temperature="0" />
-                    <WeatherCard day_of_week="SUN" temperature="0" />
+                    <WeatherCard day_of_week={this.state.day_of_week} temperature={this.state.temperature} />
+            
                 </div>
             </div>
           );
@@ -88,30 +88,31 @@
         inputKeyPress = (event) => {
             if(event.key === 'Enter'){
                 const search = this.state.search;
-                if(search=== "London"){
-                    fetch("https://community-open-weather-map.p.rapidapi.com/weather?q=London%2Cuk&lang=null&units=imperial", {
+
+                    fetch(`https://community-open-weather-map.p.rapidapi.com/weather?q=${search}&lang=null&units=imperial`, {
                     "method": "GET",
                     "headers": {
-                        "x-rapidapi-key": "API-KEY",
+                        "x-rapidapi-key": "e2fa911db7msh93dbbd7933d36a8p1ef276jsnf1cfb11fbcd8",
                         "x-rapidapi-host": "community-open-weather-map.p.rapidapi.com"
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     return response.json()
                 })
                 .then(json => {
                     console.log('json', json)
+                    console.log(json.main.temp)
+                    this.setState({
+                        temperature: Math.round(json.main.temp),
+                        forecast: json.weather[0].main
+                    })
                 })
                 .catch(err => {
                     console.error(err);
-                })
-            }
-                else{
                     this.setState({
-                        forecast: "INVALID ENTRY"
+                        forecast: "No Results Found"
                     })
-                }
+                })
             }
         }
 
@@ -119,6 +120,24 @@
             this.setState({
                 search: event.target.value
             });
+        }
+
+        getWeekday = () => {
+            let d = new Date();
+            let weekday = new Array(7);
+            weekday[0] = "SUN";
+            weekday[1] = "MON";
+            weekday[2] = "TUES";
+            weekday[3] = "WED";
+            weekday[4] = "THUR";
+            weekday[5] = "FRI";
+            weekday[6] = "SAT";
+
+            let n = weekday[d.getDay()];   
+            this.setState({
+                day_of_week: n
+            })
+
         }
       
     }
@@ -128,4 +147,6 @@
     </script>
   </body>
 </html>
+
+
 
