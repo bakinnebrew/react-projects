@@ -6,20 +6,30 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <title>Weather</title>
     <style>
+        
         #weather-card{
             width: 75px;
             height: 75px;
-            border-color:steelblue;
+            border-color:rgb(121, 187, 241);
             border-style:solid;
             border-radius: 5px;   
             display: inline-block; 
-            margin-right: 10px;   
+            margin-right: 10px;  
+            background-color: whitesmoke;
+            color: grey 
+        }
+
+        button{
+            float: center;
+            margin-top: 10px;
+            
         }
 
         body {
             text-align: center;
-            color: black;
+            color: whitesmoke;
             font-family: sans-serif;
+            background-color: grey;
         }
 
         #weather-prop-temp{
@@ -36,6 +46,7 @@
             constructor(props){
                 super(props);
                 this.state = {
+                    day: "",
                     city_name: "",
                     temperature: 0,
                     wind_speed: 0
@@ -53,34 +64,131 @@
           }
       }
 
+      class WeatherCard5Day extends React.Component {
+            constructor(props){
+                super(props);
+                this.state = {
+                    Days: [],
+                    gotarray: false
+                }
+            }
+
+            componentDidMount() {
+                if(this.state.gotarray === false){
+                this.getcity = () => {
+                this.get5DayArray()
+                }
+                }
+            }
+
+            render(){
+            return(
+                <div>
+                {this.state.Days.map(Day => {
+                    return< WeatherCard day_of_week={Day.day} temperature={Day.temperature}/>
+                })}
+                </div>
+            )
+        }
+
+        getcity = () => {
+            
+        }
+
+        get5DayArray = () => {
+
+            const search = this.state.search
+          
+            fetch(`https://community-open-weather-map.p.rapidapi.com/forecast?q=${search}&units=imperial`, {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-key": "e2fa911db7msh93dbbd7933d36a8p1ef276jsnf1cfb11fbcd8",
+                "x-rapidapi-host": "community-open-weather-map.p.rapidapi.com"
+            }
+        })
+        .then(response => {
+            return response.json()
+        })
+        .then(json => {
+            console.log('json', json)
+
+            let day_temp = new Array(5);
+
+            day_temp[0] = json.list[0].main.temp
+            day_temp[1] = json.list[5].main.temp
+            day_temp[2] = json.list[13].main.temp
+            day_temp[3] = json.list[21].main.temp 
+            day_temp[4] = json.list[29].main.temp
+
+            let d = new Date();
+            let weekday = new Array(7);
+
+            weekday[0] = "SUN"
+            weekday[1] = "MON"
+            weekday[2] = "TUE"
+            weekday[3] = "WED"
+            weekday[4] = "THUR"
+            weekday[5] = "FRI"
+            weekday[6] = "SAT"
+
+            var new_arr = []
+            
+            for(var i = 0; i < 5; i++){
+                var day = weekday[d.getDay() + i]
+                var temp = day_temp[i]
+                 new_arr.push({day: day, temperature: Math.round(temp)})
+            }
+            this.setState({
+                Days: new_arr,
+                gotarray: true
+            })
+            console.log(new_arr)
+
+            })
+        .catch(err => {
+            console.error(err);
+        });
+
+        }
+      }
+
 
       class App extends React.Component {
 
             constructor(props){
                 super(props);
                 this.state = {
-                    day_of_week: "",
+                    day_of_week: "MON",
                     search: "",
                     city: "",
                     forecast: "",
-                    temperature: 0,
+                    temperature: 65,
+                    fiveDay: 0
 
                 }
             }
             componentDidMount() {
             this.getWeekday()
             }
-
+        
         render() {
+        if(this.state.fiveDay === 1){
+            var weatherView = <WeatherCard5Day />
+            var buttontoggle = "Current Weather";
+        }
+        else{
+            var weatherView = <WeatherCard day_of_week={this.state.day_of_week} temperature={this.state.temperature} />
+            var buttontoggle = "5-Day Forecast"
+        }   
           return (
             <div>
                 <h1> Weather App </h1>
                 <input type="text" placeholder="e.g., Atlanta" onKeyPress={this.inputKeyPress} onChange={this.updateResponse} value={this.state.search}/>
                 <h3 id="current-forecast"> Current Forecast: {this.state.forecast}</h3>
                 <div>
-                    <WeatherCard day_of_week={this.state.day_of_week} temperature={this.state.temperature} />
-            
+                    {weatherView}
                 </div>
+                <button id="DayViewButton" onClick ={this.ToggleDayView} > {buttontoggle} </button>
             </div>
           );
         }
@@ -138,6 +246,18 @@
                 day_of_week: n
             })
 
+        }
+
+        ToggleDayView = () => {
+            if(this.state.fiveDay === 0){
+                var value = 1
+            }
+            else{
+                var value = 0
+            }
+            this.setState({
+                fiveDay: value
+            })
         }
       
     }
