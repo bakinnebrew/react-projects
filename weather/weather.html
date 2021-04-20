@@ -69,30 +69,26 @@
                 super(props);
                 this.state = {
                     Days: [],
-                    gotarray: false
+                    gotarray: 0,
+                    search: this.props.search
                 }
             }
 
             componentDidMount() {
-                if(this.state.gotarray === false){
-                this.getcity = () => {
+                if(this.state.gotarray === 0){
                 this.get5DayArray()
-                }
                 }
             }
 
             render(){
             return(
                 <div>
+                <h2>{this.props.search} 5-Day Forecast</h2>
                 {this.state.Days.map(Day => {
                     return< WeatherCard day_of_week={Day.day} temperature={Day.temperature}/>
                 })}
                 </div>
             )
-        }
-
-        getcity = () => {
-            
         }
 
         get5DayArray = () => {
@@ -139,9 +135,10 @@
                  new_arr.push({day: day, temperature: Math.round(temp)})
             }
             this.setState({
-                Days: new_arr,
-                gotarray: true
+                gotarray: 1,
+                Days: new_arr
             })
+            console.log(this.state.gotarray)
             console.log(new_arr)
 
             })
@@ -173,12 +170,12 @@
         
         render() {
         if(this.state.fiveDay === 1){
-            var weatherView = <WeatherCard5Day />
+            var weatherView = <WeatherCard5Day  search={this.state.search}/>
             var buttontoggle = "Current Weather";
         }
         else{
             var weatherView = <WeatherCard day_of_week={this.state.day_of_week} temperature={this.state.temperature} />
-            var buttontoggle = "5-Day Forecast"
+            var buttontoggle = "5-Day Forecast";
         }   
           return (
             <div>
@@ -267,6 +264,5 @@
     </script>
   </body>
 </html>
-
 
 
