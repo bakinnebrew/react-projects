@@ -6,6 +6,27 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <title>Currency</title>
   </head>
+  <style>
+    body{
+      text-align: center;
+      font-family: cursive;
+      padding: 150px;
+      background-color: peachpuff;
+    }
+    input {
+      display: inline-block;
+    }
+    #bridge{
+      display: inline-block;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    #result{
+      display: inline-block;
+      margin-left: 10px;
+    }
+  </style>
   <body>
     <div id="app"></div>
     <script type="text/babel">
@@ -32,14 +53,14 @@
              <div>
                 <form onChange={this.runCalculation}>
                     <input id="currency-origin-value" value={this.state.currency_origin_value1} onChange={this.updateNumber1} placeholder="0"/>
-                    <input onChange={this.updateCountry1} value={this.state.country1} id="currency-origin" type="text" placeholder="USD"/>
-                    <br />
-                    <input id="currency-origin-value" value={this.state.currency_origin_value2} onChange={this.updateNumber2} placeholder="0"/>
-                    <input onChange={this.updateCountry2} value={this.state.country2} id="currency-origin" type="text" placeholder="EUR"/>
+                    <input onChange={this.updateCountry1} value={this.state.country1} id="currency-origin" type="text" placeholder="USD" />
+                      <h3 id="bridge"> TO </h3>
+                    <input onChange={this.updateCountry2} value={this.state.country2} id="currency-origin" type="text" placeholder="EUR"/>              
                     <div id="result"> 
                         Result: {this.state.result}
                     </div>
-                </form>    
+                </form>  
+                <button onClick={this.resetNumbers}> RESET </button> 
              </div>
             </div>
           );
@@ -93,6 +114,16 @@
                   currency_origin_value2: ""
               })
           }
+      }
+
+      resetNumbers = (event) => {
+        this.setState({
+          currency_origin_value1: "",
+          currency_origin_value2: "",
+          country1: "",
+          country2: "",
+          result: "0",
+        })
       }
 
         }
