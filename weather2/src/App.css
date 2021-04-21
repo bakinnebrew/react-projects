@@ -1,0 +1,27 @@
+#weather-card {
+  width: 75px;
+  height: 75px;
+  border-color: rgb(121, 187, 241);
+  border-style: solid;
+  border-radius: 5px;
+  display: inline-block;
+  margin-right: 10px;
+  background-color: whitesmoke;
+  color: grey;
+}
+
+button {
+  float: center;
+  margin-top: 10px;
+}
+
+body {
+  text-align: center;
+  color: whitesmoke;
+  font-family: sans-serif;
+  background-color: grey;
+}
+
+#weather-prop-temp {
+  font-size: larger;
+}
