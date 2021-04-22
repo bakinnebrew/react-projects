@@ -1,2 +1,2 @@
 # react-projects
-Several SPAs built with React, several which engage with public APIs.
+SPAs built with React, several of which engage with public APIs.
